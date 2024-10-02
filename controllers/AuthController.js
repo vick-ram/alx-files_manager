@@ -1,6 +1,6 @@
 import crypto, { randomUUID } from 'crypto';
-import dbClient from '../../utils/db';
-import redisClient from '../../utils/redis';
+import dbClient from '../utils/db';
+import redisClient from '../utils/redis';
 
 class AuthController {
   static async getConnect(req, res) {
