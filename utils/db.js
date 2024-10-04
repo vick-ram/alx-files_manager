@@ -24,7 +24,12 @@ class DBClient {
   }
 
   isAlive() {
-    return this.client && this.client.isConnected();
+    try {
+      this.client.ping();
+      return true;
+    } catch (error) {
+      return false;
+    }
   }
 
   async nbUsers() {
