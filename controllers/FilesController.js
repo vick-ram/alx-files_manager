@@ -1,11 +1,11 @@
 import fs from 'fs';
 import path from 'path';
 import crypto from 'crypto';
-import mime from 'mime-types';
+// import mime from 'mime-types';
 import redisClient from '../utils/redis';
 import dbClient from '../utils/db';
 import getUserFromToken from '../utils/auth';
-import fileQueue from '../workers/fileWorker'
+import fileQueue from '../workers/fileWorker';
 
 const { ObjectId } = require('mongodb');
 
@@ -185,50 +185,50 @@ class FilesController {
     return res.status(200).json(updatedFile);
   }
 
-  static async getFile(req, res) {
-    const fileId = req.params.id;
-    const { size } = req.query;
-    const token = req.header('X-Token');
+  // static async getFile(req, res) {
+  //   const fileId = req.params.id;
+  //   const { size } = req.query;
+  //   const token = req.header('X-Token');
 
-    const file = await dbClient.db.collection('files').findOne({ _id: ObjectId(fileId) });
+  //   const file = await dbClient.db.collection('files').findOne({ _id: ObjectId(fileId) });
 
-    if (!file) {
-      return res.status(404).json({ error: 'Not found' });
-    }
+  //   if (!file) {
+  //     return res.status(404).json({ error: 'Not found' });
+  //   }
 
-    if (file.type === 'folder') {
-      return res.status(400).json({ error: "A folder doesn't have content" });
-    }
+  //   if (file.type === 'folder') {
+  //     return res.status(400).json({ error: "A folder doesn't have content" });
+  //   }
 
-    if (!file.isPublic) {
-      const user = await getUserFromToken(token);
+  //   if (!file.isPublic) {
+  //     const user = await getUserFromToken(token);
 
-      if (!user || !user._id.equals(file.userId)) {
-        return res.status(404).json({ error: 'Not found' });
-      }
-    }
+  //     if (!user || !user._id.equals(file.userId)) {
+  //       return res.status(404).json({ error: 'Not found' });
+  //     }
+  //   }
 
-    let filePath = path.join(__dirname, '../files', file.name);
+  //   let filePath = path.join(__dirname, '../files', file.name);
 
-    if (size) {
-      filePath = `${filePath}_${size}`;
-    }
+  //   if (size) {
+  //     filePath = `${filePath}_${size}`;
+  //   }
 
-    if (!fs.existsSync(filePath)) {
-      return res.status(404).json({ error: 'Not found' });
-    }
+  //   if (!fs.existsSync(filePath)) {
+  //     return res.status(404).json({ error: 'Not found' });
+  //   }
 
-    const mimeType = mime.lookup(file.name);
+  //   const mimeType = mime.lookup(file.name);
 
-    fs.readFile(filePath, (err, data) => {
-      if (err) {
-        return res.status(500).json({ error: 'Failed to read file' });
-      }
+  //   fs.readFile(filePath, (err, data) => {
+  //     if (err) {
+  //       return res.status(500).json({ error: 'Failed to read file' });
+  //     }
 
-      res.setHeader('Content-Type', mimeType || 'application/octet-stream');
-      return res.status(200).send(data);
-    });
-  }
+  //     res.setHeader('Content-Type', mimeType || 'application/octet-stream');
+  //     return res.status(200).send(data);
+  //   });
+  // }
 
   static async postFile(req, res) {
     const { name, type, isPublic } = req.body;
