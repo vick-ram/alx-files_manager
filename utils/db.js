@@ -18,7 +18,6 @@ class DBClient {
     try {
       await this.client.connect();
       this.db = this.client.db(this.database);
-      console.log('Connected to MongoDB');
       this.isConnected = true;
     } catch (err) {
       console.error('MongoDB connection error:', err);
